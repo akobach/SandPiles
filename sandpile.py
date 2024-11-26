@@ -10,7 +10,7 @@ class SandPile():
         self.N = N # size of square sand pile
         self.K = K # critical height before a topple
         self.pile = np.zeros((self.N, self.N), dtype=int) # sand pile with zero sand to start
-        self.sandsack = deque([]) # stack for the sites that are ready to recieve sand
+        self.topplequeue = deque([]) # queue for the sites that are ready to recieve sand
             
 
         
@@ -51,14 +51,14 @@ class SandPile():
         # get which site to place next grain, given the policy
         i,j = policy.get_move()
                         
-        # add site to stack
-        self.sandsack.append((i,j))
+        # add site to queue 
+        self.topplequeue.append((i,j))
                 
         # loop through all sites ready to receive a grain of sand
-        while self.sandsack:
+        while self.topplequeue:
             
-            # add grain to last element in stack and remove from stack
-            k,l = self.sandsack.pop()
+            # add grain to first element in queue and remove from queue 
+            k,l = self.topplequeue.popleft()
             self.pile[k,l] += 1
             
             # topple
@@ -96,12 +96,12 @@ class SandPile():
         """
         Topple site (i,j) by:
             Remove 4 grains from site (i,j)
-            Add neighbors (if not on border) to stack
+            Add neighbors (if not on border) to queue 
         """
         self.pile[i,j] -= 4
         for k,l in self.get_neighbors(i,j):
             if not self.is_border(k,l):
-                self.sandsack.append((k,l))
+                self.topplequeue.append((k,l))
      
      
      
