@@ -2,7 +2,7 @@
 
 Currently, this code only implements a BTW abelian sand pile model with a random policy.
 
-The external Python libraries used are (included also is a `.yaml` file for creating a venv.):
+The external Python libraries used are (included also is a `.yml` file for creating a venv.):
 * numpy
 * matplotlib
 * tqdm
