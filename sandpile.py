@@ -3,6 +3,7 @@ from collections import deque
 from tqdm import tqdm
 import plotting
 import sppolicies
+import itertools
 
 
 class SandPile():
@@ -10,7 +11,7 @@ class SandPile():
         self.N = N # size of square sand pile
         self.K = K # critical height before a topple
         self.pile = np.zeros((self.N, self.N), dtype=int) # sand pile with zero sand to start
-        self.topplequeue = deque([]) # queue for the sites that are ready to recieve sand
+        self.queue= deque([]) # queuefor the sites that are ready to recieve sand
             
 
         
@@ -51,14 +52,13 @@ class SandPile():
         # get which site to place next grain, given the policy
         i,j = policy.get_move()
                         
-        # add site to queue 
-        self.topplequeue.append((i,j))
+        # add site to queue
+        self.queue.append((i,j))
                 
         # loop through all sites ready to receive a grain of sand
-        while self.topplequeue:
-            
-            # add grain to first element in queue and remove from queue 
-            k,l = self.topplequeue.popleft()
+        while self.queue:
+            # add grain to first element in queueand remove from queue
+            k,l = self.queue.popleft()
             self.pile[k,l] += 1
             
             # topple
@@ -90,18 +90,25 @@ class SandPile():
         yield (i,j+1)
         yield (i,j-1)
 
-
         
     def topple(self, i: int, j: int):
         """
         Topple site (i,j) by:
-            Remove 4 grains from site (i,j)
-            Add neighbors (if not on border) to queue 
+            Remove all grains from site (i,j)
+            Distribute grains like a cycle of (up, down, right, left)
+            If a neighbors gets a grain, add it to the queue
+            Grains added to the border fall off
         """
-        self.pile[i,j] -= 4
-        for k,l in self.get_neighbors(i,j):
+        neighbor_iter = itertools.cycle(self.get_neighbors(i,j))
+        while self.pile[i,j] > 0:
+            k,l = next(neighbor_iter)
             if not self.is_border(k,l):
-                self.topplequeue.append((k,l))
+                self.queue.append((k,l))
+                
+            # sand is always lost, even if it goes off the edge
+            self.pile[i,j] -= 1
+            
+            
      
      
      

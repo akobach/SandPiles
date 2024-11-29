@@ -12,11 +12,11 @@ if __name__ == "__main__":
     randompolicy = sppolicies.RandomPolicy(pile)
     
     # burn in to equilibrum
-    pile.play(Nturns=5*10**4, policy=randompolicy, plot=False)
+    #pile.play(Nturns=5*10**4, policy=randompolicy, plot=False)
     
     # collect statistics
-    pile.play(Nturns=5*10**4, policy=randompolicy, plot=True)
+    #pile.play(Nturns=5*10**4, policy=randompolicy, plot=True)
 
     # profiling
-    #cProfile.run('pile.play(Nturns=5*10**4, policy=randompolicy)')
+    cProfile.run('pile.play(Nturns=5*10**4, policy=randompolicy)')
         
